@@ -61,7 +61,8 @@ namespace WebApplication1
             app.UseCors(MyAllowSpecificOrigins);
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseMvcWithDefaultRoute();
+            //app.UseMvc();
         }
     }
 }
