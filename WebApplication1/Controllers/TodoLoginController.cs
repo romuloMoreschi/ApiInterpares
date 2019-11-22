@@ -25,11 +25,25 @@ namespace WebApplication1.Controllers
         }
 
         // GET: api/TodoLogin/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:long}")]
         public async Task<ActionResult<Login>> GetTodoLogin(long id){
             var todoLogin = await _context.Login.FindAsync(id);
 
             if (todoLogin == null){
+                return NotFound();
+            }
+
+            return todoLogin;
+        }
+
+        // GET: api/TodoLogin/5
+        [HttpGet("{nome}")]
+        public async Task<ActionResult<Login>> PesquisarPorNome(string nome)
+        {
+            var todoLogin = await _context.Login.Where(p => p.Name.ToUpper().Contains(nome.ToUpper())).FirstOrDefaultAsync();
+
+            if (todoLogin == null)
+            {
                 return NotFound();
             }
 
