@@ -38,16 +38,15 @@ namespace WebApplication1.Controllers
 
         // GET: api/TodoLogin/5
         [HttpGet("{nome}")]
-        public async Task<ActionResult<Login>> PesquisarPorNome(string nome)
+        public async Task<ActionResult> PesquisarPorNome(String nome)
         {
-            var todoLogin = await _context.Login.Where(p => p.Name.ToUpper().Contains(nome.ToUpper())).FirstOrDefaultAsync();
-
-            if (todoLogin == null)
+            var encontrado = await _context.Login.AnyAsync(p => p.Name.ToUpper().Contains(nome.ToUpper()));
+            if (encontrado == null)
             {
                 return NotFound();
             }
 
-            return todoLogin;
+            return Ok(encontrado);
         }
 
         // PUT: api/TodoLogin/5
