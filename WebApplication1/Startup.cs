@@ -62,7 +62,7 @@ namespace WebApplication1
 
             app.UseHttpsRedirection();
             app.UseMvcWithDefaultRoute();
-            //app.UseMvc();
+            app.UseMvc();
         }
     }
 }

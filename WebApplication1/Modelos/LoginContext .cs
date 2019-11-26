@@ -10,5 +10,6 @@ namespace LoginApi.Models
         }
 
         public DbSet<Login> Login { get; set; }
+        public DbSet<Grupo> Grupo { get; set; }
     }
 }

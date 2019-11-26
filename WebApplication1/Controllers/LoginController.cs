@@ -40,7 +40,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{nome}")]
         public async Task<ActionResult> PesquisarPorNome(String nome)
         {
-            var encontrado = await _context.Login.AnyAsync(p => p.Name.ToUpper().Contains(nome.ToUpper()));
+            var encontrado = await _context.Login.AnyAsync(p => p.UserName.ToUpper().Contains(nome.ToUpper()));
             if (encontrado == null)
             {
                 return NotFound();
