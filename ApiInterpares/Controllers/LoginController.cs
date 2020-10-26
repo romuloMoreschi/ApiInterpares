@@ -24,7 +24,7 @@ namespace WebApplication1.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Authenticate([FromBody] Login model)
         {
-            var user = await _context.Login.FindAsync(model.UserName);
+            var user = await _context.Login.FindAsync(model.UserName, model.Password);
 
             if (user == null)
             {
