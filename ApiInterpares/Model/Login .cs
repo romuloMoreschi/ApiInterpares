@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LoginApi.Models
 {
@@ -7,10 +8,5 @@ namespace LoginApi.Models
         public long Id { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string Nome { get; set; }
-
-        [ForeignKey("GrupoId")]
-        public Grupo Grupo { get; set; }
-        public int GrupoId { get; set; }
     }
 }

@@ -4,11 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using LoginApi.Models;
 using ApiInterpares;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ApiInterpares.Data;
 
 namespace WebApplication1
 {
@@ -25,7 +25,7 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<LoginContext>(opt => opt.UseInMemoryDatabase("ToDoLogin"));
+            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("ToDoLogin"));
             services.AddControllers();
 
             services.AddCors(options =>

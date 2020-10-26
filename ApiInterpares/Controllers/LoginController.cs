@@ -7,25 +7,26 @@ using Microsoft.EntityFrameworkCore;
 using LoginApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using ApiInterpares.Services;
+using ApiInterpares.Data;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class TodosLoginController : ControllerBase{
-        private readonly LoginContext _context;
+        private readonly DataContext _context;
 
-        public TodosLoginController(LoginContext context){
+        public TodosLoginController(DataContext context){
             _context = context;
         }
 
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] Login model)
+        public async Task<ActionResult<dynamic>> AutenticaLogin([FromBody] Login model)
         {
             var user = await _context.Login.FindAsync(model.UserName, model.Password);
-
+            
             if (user == null)
             {
                 return NotFound(new { Message = "Usuário ou senha inválidos" });
@@ -42,13 +43,13 @@ namespace WebApplication1.Controllers
 
         // GET: api/TodoLogin
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Login>>> GetTodoItems(){
+        public async Task<ActionResult<IEnumerable<Login>>> GetTodosLogins(){
             return await _context.Login.ToListAsync();
         }
 
         // GET: api/TodoLogin/5
         [HttpGet("{id:long}")]
-        public async Task<ActionResult<Login>> GetTodoLogin(long id){
+        public async Task<ActionResult<Login>> GetLoginId(long id){
             var todoLogin = await _context.Login.FindAsync(id);
 
             if (todoLogin == null){
@@ -60,11 +61,11 @@ namespace WebApplication1.Controllers
 
         // POST: api/TodoLogin
         [HttpPost]
-        public async Task<ActionResult<Login>> PostTodoLogin(Login newLogin){
+        public async Task<ActionResult<Login>> PostLogin(Login newLogin){
             _context.Login.Add(newLogin);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetTodoLogin), new { id = newLogin.Id }, newLogin);
+            return CreatedAtAction(nameof(GetLoginId), new { id = newLogin.Id }, newLogin);
         }        
 
         [HttpPut("{id}")]

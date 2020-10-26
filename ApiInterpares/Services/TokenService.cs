@@ -13,16 +13,17 @@ namespace ApiInterpares.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            var expiration = DateTime.UtcNow.AddHours(2);
             var TokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, login.UserName.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, login.Nome.ToString())
+                    new Claim(ClaimTypes.Name, login.UserName.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(2), 
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey (key), SecurityAlgorithms.HmacSha256Signature)
-            };
+                Expires = expiration,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };          
+
             var token = tokenHandler.CreateToken(TokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
