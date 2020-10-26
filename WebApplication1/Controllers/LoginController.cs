@@ -2,20 +2,42 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LoginApi.Models;
+using Microsoft.AspNetCore.Authorization;
+using ApiInterpares.Services;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TodoLoginController : ControllerBase{
+    public class TodosLoginController : ControllerBase{
         private readonly LoginContext _context;
 
-        public TodoLoginController(LoginContext context){
+        public TodosLoginController(LoginContext context){
             _context = context;
+        }
+
+        [HttpPost]
+        [Route("Login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] Login model)
+        {
+            var user = await _context.Login.FindAsync(model.UserName);
+
+            if (user == null)
+            {
+                return NotFound(new { Message = "Usuário ou senha inválidos" });
+            }
+
+            var token = TokenService.GenerateToken(user);
+            user.Password = "";
+            return new
+            {
+                user = user,
+                token = token
+            };
         }
 
         // GET: api/TodoLogin
@@ -36,22 +58,15 @@ namespace WebApplication1.Controllers
             return todoLogin;
         }
 
-        // GET: api/TodoLogin/5
-        [HttpGet("{nome}")]
-        public async Task<ActionResult> PesquisarPorNome(String nome)
-        {
-            var encontrado = await _context.Login.AnyAsync(p => p.UserName.ToUpper().Contains(nome.ToUpper()));
-            if (encontrado == null)
-            {
-                return NotFound();
-            }
+        // POST: api/TodoLogin
+        [HttpPost]
+        public async Task<ActionResult<Login>> PostTodoLogin(Login newLogin){
+            _context.Login.Add(newLogin);
+            await _context.SaveChangesAsync();
 
-            return Ok(encontrado);
-        }
+            return CreatedAtAction(nameof(GetTodoLogin), new { id = newLogin.Id }, newLogin);
+        }        
 
-        // PUT: api/TodoLogin/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoLogin(long id, Login todoLogin){
             if (id != todoLogin.Id){
@@ -74,18 +89,7 @@ namespace WebApplication1.Controllers
 
             return NoContent();
         }
-
-        // POST: api/TodoLogin
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<Login>> PostTodoLogin(Login todoLogin){
-            _context.Login.Add(todoLogin);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetTodoLogin), new { id = todoLogin.Id }, todoLogin);
-        }
-
+        
         // DELETE: api/TodoLogin/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Login>> DeleteTodoLogin(long id){

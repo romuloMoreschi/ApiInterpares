@@ -12,15 +12,15 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/TodoLogin",
+      "launchUrl": "api/TodosLogin",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "WebApplication1": {
+    "ApiInterpares": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "apiinterpares",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

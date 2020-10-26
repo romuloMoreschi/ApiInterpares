@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiInterpares", "WebApplication1\ApiInterpares.csproj", "{211324DF-D01D-4693-A181-4C7EF9DCCC66}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{211324DF-D01D-4693-A181-4C7EF9DCCC66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{211324DF-D01D-4693-A181-4C7EF9DCCC66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{211324DF-D01D-4693-A181-4C7EF9DCCC66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{211324DF-D01D-4693-A181-4C7EF9DCCC66}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7CDC2155-DCFF-43D8-BEF0-DB2A15563B83}
+	EndGlobalSection
+EndGlobal
