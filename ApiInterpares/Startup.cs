@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ApiInterpares.Data;
+using LoginApi.Models;
 
 namespace WebApplication1
 {
@@ -25,7 +26,10 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("ToDoLogin"));
+            services.AddDbContext<ApiInterparesContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ApiInterparesContext"), builder =>
+                    builder.MigrationsAssembly("ApiInterpares")));
+
             services.AddControllers();
 
             services.AddCors(options =>
@@ -54,6 +58,13 @@ namespace WebApplication1
                    ValidateAudience = false
                };
            });
+            services.AddIdentityCore<Login>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 7;
+                options.Password.RequireUppercase = true;
+
+            }).AddEntityFrameworkStores<ApiInterparesContext>();
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
         }

@@ -8,37 +8,45 @@ using LoginApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using ApiInterpares.Services;
 using ApiInterpares.Data;
+using Microsoft.AspNetCore.Identity;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class TodosLoginController : ControllerBase{
-        private readonly DataContext _context;
+        private readonly ApiInterparesContext _context;
+        private readonly UserManager<Login> _signInManager;
 
-        public TodosLoginController(DataContext context){
+        public TodosLoginController(ApiInterparesContext context, UserManager<Login> signInManager)
+        {
             _context = context;
+            _signInManager = signInManager;
         }
 
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> AutenticaLogin([FromBody] Login model)
+        public async Task<ActionResult<dynamic>> AutenticaLogin([FromBody] Login login)
         {
-            var user = await _context.Login.FindAsync(model.UserName, model.Password);
-            
+            var user = await _signInManager.FindByNameAsync(login.UserName).ConfigureAwait(false);
             if (user == null)
             {
-                return NotFound(new { Message = "Usuário ou senha inválidos" });
+                return BadRequest("Usuario nao encontrado");
+            }
+            if (await _signInManager.CheckPasswordAsync(user, login.UserName).ConfigureAwait(false))
+            {
+                var token = TokenService.GenerateToken(user);
+                user.Password = "";
+                return new
+                {
+                    user = user,
+                    token = token
+                };
             }
 
-            var token = TokenService.GenerateToken(user);
-            user.Password = "";
-            return new
-            {
-                user = user,
-                token = token
-            };
+            return BadRequest("Usuario nao encontrado");
         }
 
         // GET: api/TodoLogin
