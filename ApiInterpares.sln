@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29509.3
+VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiInterpares", "WebApplication1\ApiInterpares.csproj", "{211324DF-D01D-4693-A181-4C7EF9DCCC66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiInterpares", "ApiInterpares\ApiInterpares.csproj", "{5DFA2734-3F1B-4D8E-82D3-568C00B2AB45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{211324DF-D01D-4693-A181-4C7EF9DCCC66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{211324DF-D01D-4693-A181-4C7EF9DCCC66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{211324DF-D01D-4693-A181-4C7EF9DCCC66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{211324DF-D01D-4693-A181-4C7EF9DCCC66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DFA2734-3F1B-4D8E-82D3-568C00B2AB45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DFA2734-3F1B-4D8E-82D3-568C00B2AB45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DFA2734-3F1B-4D8E-82D3-568C00B2AB45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DFA2734-3F1B-4D8E-82D3-568C00B2AB45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7CDC2155-DCFF-43D8-BEF0-DB2A15563B83}
+		SolutionGuid = {F5A4BCFB-2438-4F2A-B108-46F5589C4001}
 	EndGlobalSection
 EndGlobal
