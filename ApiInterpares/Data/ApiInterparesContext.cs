@@ -6,7 +6,7 @@ using System;
 
 namespace ApiInterpares.Data
 {
-    public class ApiInterparesContext : IdentityDbContext
+    public class ApiInterparesContext : IdentityDbContext<Login>
     {
         public ApiInterparesContext(DbContextOptions<ApiInterparesContext> options)
             : base(options)

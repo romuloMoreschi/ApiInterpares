@@ -38,7 +38,6 @@ namespace WebApplication1.Controllers
             if (await _signInManager.CheckPasswordAsync(user, login.UserName).ConfigureAwait(false))
             {
                 var token = TokenService.GenerateToken(user);
-                user.Password = "";
                 return new
                 {
                     user = user,
@@ -78,7 +77,7 @@ namespace WebApplication1.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoLogin(long id, Login todoLogin){
-            if (id != todoLogin.Id){
+            if (id.Equals(todoLogin.Id)){
                 return BadRequest();
             }
 
@@ -114,7 +113,7 @@ namespace WebApplication1.Controllers
         }
 
         private bool TodoLoginExists(long id){
-            return _context.Login.Any(e => e.Id == id);
+            return _context.Login.Any(e => e.Id.Equals(id));
         }
     }
 }
