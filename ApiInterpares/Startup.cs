@@ -4,13 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using ApiInterpares;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using ApiInterpares.Data;
 using LoginApi.Models;
 using Microsoft.AspNetCore.Identity;
+using ApiInterpares.Settings;
 
 namespace WebApplication1
 {
@@ -27,6 +24,8 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen();
+
             services.AddDbContext<ApiInterparesContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ApiInterparesContext"), builder =>
                     builder.MigrationsAssembly("ApiInterpares")));
@@ -42,15 +41,17 @@ namespace WebApplication1
                 });
             });
 
-            services.AddIdentity<Login, IdentityRole>(options =>
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 7;
-                options.Password.RequireUppercase = true;
+                options.Password.RequireUppercase = false;
+                options.User.RequireUniqueEmail = true;
 
             }).AddEntityFrameworkStores<ApiInterparesContext>();
 
-            services.AddMvc(option => option.EnableEndpointRouting = false);
+            services.Configure<JwtSecurityTokenSettings>(Configuration.GetSection("JwtSecurityToken"));
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -74,7 +75,12 @@ namespace WebApplication1
 
             app.UseAuthorization();
 
-            app.UseMvc();
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+           {
+               c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API V1");
+           });
 
             app.UseEndpoints(endpoints =>
             {

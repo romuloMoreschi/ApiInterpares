@@ -1,119 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using LoginApi.Models;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 using ApiInterpares.Services;
-using ApiInterpares.Data;
-using Microsoft.AspNetCore.Identity;
+using ApiInterpares.Settings;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Options;
+using ApiInterpares.ViewModel;
 
-namespace WebApplication1.Controllers
+namespace ApiInterpares.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TodosLoginController : ControllerBase{
-        private readonly ApiInterparesContext _context;
-        private readonly UserManager<Login> _signInManager;
+    public class LoginController : ControllerBase
+    {
+        private readonly UserManager<IdentityUser> _signInManager;
+        private readonly JwtSecurityTokenSettings _jwt;
 
-        public TodosLoginController(ApiInterparesContext context, UserManager<Login> signInManager)
+        public LoginController(UserManager<IdentityUser> signInManager, IOptions<JwtSecurityTokenSettings> jwt)
         {
-            _context = context;
             _signInManager = signInManager;
+            this._jwt = jwt.Value;
         }
 
         [HttpPost]
-        [Route("Login")]
-        [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> AutenticaLogin([FromBody] Login login)
+        public async Task<IActionResult> Post(LoginViewModel loginModel)
         {
-            var user = await _signInManager.FindByNameAsync(login.UserName).ConfigureAwait(false);
+            TokenService tokenService = new TokenService(_signInManager, _jwt);
+
+            var user = await _signInManager.FindByNameAsync(loginModel.Login).ConfigureAwait(false);
             if (user == null)
+                return BadRequest("Usuário não encontrado.");
+            if (await _signInManager.CheckPasswordAsync(user, loginModel.Password).ConfigureAwait(false))
             {
-                return BadRequest("Usuario nao encontrado");
+                JwtSecurityToken jwtSecurityToken = await tokenService.GenerateToken(user).ConfigureAwait(false);
+                return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
             }
-            if (await _signInManager.CheckPasswordAsync(user, login.UserName).ConfigureAwait(false))
-            {
-                var token = TokenService.GenerateToken(user);
-                return new
-                {
-                    user = user,
-                    token = token
-                };
-            }
-
-            return BadRequest("Usuario nao encontrado");
-        }
-
-        // GET: api/TodoLogin
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Login>>> GetTodosLogins(){
-            return await _context.Login.ToListAsync();
-        }
-
-        // GET: api/TodoLogin/5
-        [HttpGet("{id:long}")]
-        public async Task<ActionResult<Login>> GetLoginId(long id){
-            var todoLogin = await _context.Login.FindAsync(id);
-
-            if (todoLogin == null){
-                return NotFound();
-            }
-
-            return todoLogin;
-        }
-
-        // POST: api/TodoLogin
-        [HttpPost]
-        public async Task<ActionResult<Login>> PostLogin(Login newLogin){
-            _context.Login.Add(newLogin);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetLoginId), new { id = newLogin.Id }, newLogin);
-        }        
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoLogin(long id, Login todoLogin){
-            if (id.Equals(todoLogin.Id)){
-                return BadRequest();
-            }
-
-            _context.Entry(todoLogin).State = EntityState.Modified;
-
-            try{
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException){
-                if (!TodoLoginExists(id)){
-                    return NotFound();
-                }
-                else{
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-        
-        // DELETE: api/TodoLogin/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Login>> DeleteTodoLogin(long id){
-            var todoLogin = await _context.Login.FindAsync(id);
-            if (todoLogin == null){
-                return NotFound();
-            }
-
-            _context.Login.Remove(todoLogin);
-            await _context.SaveChangesAsync();
-
-            return todoLogin;
-        }
-
-        private bool TodoLoginExists(long id){
-            return _context.Login.Any(e => e.Id.Equals(id));
+            return BadRequest(new string[] { "Senha inválida." });
         }
     }
 }
