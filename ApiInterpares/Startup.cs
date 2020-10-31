@@ -5,9 +5,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using ApiInterpares.Data;
-using LoginApi.Models;
 using Microsoft.AspNetCore.Identity;
 using ApiInterpares.Settings;
+using System.Threading.Tasks;
+using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
 
 namespace WebApplication1
 {
@@ -24,7 +30,29 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Identity API ", Version = "V1" });
+                c.AddSecurityDefinition("Token", new OpenApiSecurityScheme()
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Coloque o token de autenticacao aqui",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme { Name = "Token",
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Token"
+                        },
+                        In = ParameterLocation.Header
+                    },  new List<string>() }
+                });
+            });
 
             services.AddDbContext<ApiInterparesContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ApiInterparesContext"), builder =>
@@ -50,10 +78,37 @@ namespace WebApplication1
 
             }).AddEntityFrameworkStores<ApiInterparesContext>();
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.Headers["Location"] = context.RedirectUri;
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            });
             services.Configure<JwtSecurityTokenSettings>(Configuration.GetSection("JwtSecurityToken"));
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(o => 
+                {
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    { 
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
 
+                        ValidIssuer = Configuration["JwtSecutiryToken:Issuer"],
+                        ValidAudience = Configuration["JwtSecutiryToken:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSecutiryToken:Key"]))
+                    };
+                });
         }
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

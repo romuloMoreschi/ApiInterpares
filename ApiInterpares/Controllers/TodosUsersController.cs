@@ -20,13 +20,14 @@ namespace ApiInterpares.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<List<IdentityUser>> GetTodosUsers()
         {
             return await _context.Users.ToListAsync();
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<IdentityUser>> GerUserId(string id)
         {
             var login = await _context.Login.FindAsync(id);
@@ -40,6 +41,7 @@ namespace ApiInterpares.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> AlteraUser(string id, IdentityUser login)
         {
             if (id.Equals(login.Id))
@@ -69,6 +71,7 @@ namespace ApiInterpares.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<IdentityUser>> DeleteUser(string id)
         {
             var todoLogin = await _context.Login.FindAsync(id);
