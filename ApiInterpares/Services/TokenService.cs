@@ -39,7 +39,7 @@ namespace ApiInterpares.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("uid", user.Id),
-                new Claim("ip", ipAndress)
+                new Claim("ip", ipAndress)               
             }
             .Union(userClaims)
             .Union(roleClaims);

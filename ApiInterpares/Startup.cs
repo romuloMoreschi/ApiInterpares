@@ -55,7 +55,7 @@ namespace WebApplication1
             });
 
             services.AddDbContext<ApiInterparesContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ApiInterparesContext"), builder =>
+                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"), builder =>
                     builder.MigrationsAssembly("ApiInterpares")));
 
             services.AddControllers();
